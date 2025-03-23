@@ -59,7 +59,7 @@ const WorkerSignup = () => {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background/50 to-background p-4">
       <div className="w-full max-w-md">
         <BlurContainer className="flex flex-col items-center mb-8">
-          <h1 className="text-3xl font-bold text-center text-gradient mb-2">Futurista</h1>
+          <h1 className="text-3xl font-bold text-center text-gradient mb-2">GoEvents</h1>
           <p className="text-center text-muted-foreground">
             Next-gen event management platform
           </p>

@@ -46,7 +46,6 @@ const LoginPage = () => {
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <BlurContainer className="flex flex-col items-center mb-8">
-          <img src="/lovable-uploads/14ba4f7e-de79-45df-91d1-e7e7642c505d.png" alt="GoEvents Logo" className="h-20 mb-2" />
           <h1 className="text-3xl font-bold text-center text-gradient mb-2">GoEvents</h1>
           <p className="text-center text-muted-foreground">
             Next-gen event management platform

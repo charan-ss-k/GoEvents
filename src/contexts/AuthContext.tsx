@@ -15,8 +15,10 @@ interface UserProfile {
 
 interface AuthContextType {
   user: UserProfile | null;
+  session: Session | null;
   isLoading: boolean;
   userType: string | null;
+  signUp: (email: string, password: string, userData: { user_type: string; full_name: string; }) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
@@ -50,35 +52,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   useEffect(() => {
-    // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, currentSession) => {
         logActivity('Auth state changed', event);
         
         setSession(currentSession);
-        setUser(currentSession?.user ?? null);
         
-        // Get user profile if user exists
+        // Get complete user profile if user exists
         if (currentSession?.user) {
           const { data: profile, error } = await supabase
             .from('profiles')
-            .select('user_type')
+            .select('*')
             .eq('id', currentSession.user.id)
             .single();
           
           if (error) {
             console.error('Error fetching user profile:', error);
+            setUser(null);
           } else if (profile) {
+            setUser(profile);
             setUserType(profile.user_type);
           }
           
-          // Log this action for recent activity
           if (event === 'SIGNED_IN') {
             logActivity('User signed in', currentSession.user.email || '');
           } else if (event === 'SIGNED_OUT') {
             logActivity('User signed out');
           }
         } else {
+          setUser(null);
           setUserType(null);
         }
         
@@ -86,31 +88,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     );
     
-    // Check for existing session
-    supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
+    // Initial session check
+    supabase.auth.getSession().then(async ({ data: { session: currentSession } }) => {
       setSession(currentSession);
-      setUser(currentSession?.user ?? null);
       
-      // Get user profile if user exists
       if (currentSession?.user) {
-        supabase
+        const { data: profile, error } = await supabase
           .from('profiles')
-          .select('user_type')
+          .select('*')
           .eq('id', currentSession.user.id)
-          .single()
-          .then(({ data: profile, error }) => {
-            if (error) {
-              console.error('Error fetching user profile:', error);
-            } else if (profile) {
-              setUserType(profile.user_type);
-            }
-            setIsLoading(false);
-          });
-          
+          .single();
+        
+        if (error) {
+          console.error('Error fetching user profile:', error);
+          setUser(null);
+        } else if (profile) {
+          setUser(profile);
+          setUserType(profile.user_type);
+        }
+        
         logActivity('Session restored', currentSession.user.email || '');
-      } else {
-        setIsLoading(false);
       }
+      setIsLoading(false);
     });
     
     return () => {
