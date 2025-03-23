@@ -127,6 +127,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       if (data.user) {
+        // Insert user profile into the profiles table
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .insert({
+            id: data.user.id,
+            full_name: userData.full_name,
+            user_type: userData.user_type,
+          });
+
+        if (profileError) {
+          throw profileError;
+        }
+
         toast.success('Registration successful! Check your email to confirm your account.');
         // Log this action for recent activity
         logActivity('New user registered', `${email} as ${userData.user_type}`);

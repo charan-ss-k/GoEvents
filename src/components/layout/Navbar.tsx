@@ -85,16 +85,6 @@ const Navbar: React.FC = () => {
         </div>
         
         <div className="flex items-center space-x-2">
-          {user && (
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="hidden md:flex text-white"
-              aria-label="Search"
-            >
-              <Search className="h-5 w-5" />
-            </Button>
-          )}
           
           {user ? (
             <>

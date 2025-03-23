@@ -9,6 +9,7 @@ import {
   DialogContent,
   DialogClose,
 } from "@/components/ui/dialog";
+import { toast } from "sonner";
 
 export interface EventCardProps {
   id: string;
@@ -30,6 +31,7 @@ export interface EventCardProps {
   className?: string;
   onClick?: () => void;
   description?: string;
+  userType?: string; // Add userType prop
 }
 
 const EventCard: React.FC<EventCardProps> = ({
@@ -47,7 +49,8 @@ const EventCard: React.FC<EventCardProps> = ({
   endTime = "6:00 PM",
   className,
   onClick,
-  description = "No description available"
+  description = "No description available",
+  userType = "guest" // Default to guest
 }) => {
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
@@ -57,6 +60,11 @@ const EventCard: React.FC<EventCardProps> = ({
 
   const handleViewDetails = () => {
     setIsDetailsOpen(true);
+  };
+
+  const handleBookEvent = () => {
+    // Logic to book the event
+    toast.success("Event booked successfully");
   };
 
   const getEventStatus = () => {
@@ -191,6 +199,14 @@ const EventCard: React.FC<EventCardProps> = ({
           >
             View Details
           </Button>
+          {userType === "client" && (
+            <Button 
+              className="w-full" 
+              onClick={handleBookEvent}
+            >
+              Book
+            </Button>
+          )}
         </div>
       </BlurContainer>
 

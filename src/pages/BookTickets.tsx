@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import { Button } from '@/components/ui/button';
@@ -154,6 +153,10 @@ const BookTickets: React.FC = () => {
   );
   
   const handleBookEvent = (event: EventData) => {
+    if (user.user_type !== 'worker') {
+      toast.error('Only workers can book tickets.');
+      return;
+    }
     setSelectedEvent(event);
     setSelectedTicketType('');
     setTicketQuantity(1);

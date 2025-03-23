@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import { Button } from '@/components/ui/button';
@@ -42,6 +41,10 @@ const CheckIn: React.FC = () => {
   
   // Load events and check for URL params on component mount
   useEffect(() => {
+    if (user.user_type === 'worker') {
+      toast.error('Workers are not allowed to check in or see participants.');
+      return;
+    }
     const loadEvents = () => {
       // In a real app, fetch from API or database
       const mockEvents: Event[] = [
@@ -61,7 +64,7 @@ const CheckIn: React.FC = () => {
     };
     
     loadEvents();
-  }, []);
+  }, [user]);
   
   // Filter attendees when search term changes
   useEffect(() => {
