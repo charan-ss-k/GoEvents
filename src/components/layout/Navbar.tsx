@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
@@ -34,7 +33,12 @@ const Navbar: React.FC = () => {
   };
 
   const handleLogout = async () => {
-    await signOut();
+    try {
+      await signOut();
+      setMobileMenuOpen(false); // Close mobile menu after logout
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   };
 
   return (

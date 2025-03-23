@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
@@ -169,8 +168,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (error) {
         throw error;
       }
+      // Clear user state first
+      setUser(null);
+      setSession(null);
+      setUserType(null);
+      
       toast.success('Logged out successfully');
-      // Log this action for recent activity
       logActivity('User logged out');
       navigate('/login');
     } catch (error: any) {
