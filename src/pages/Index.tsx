@@ -26,10 +26,7 @@ const Index = () => {
           <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5 dark:from-primary/10 dark:to-secondary/10 z-0"></div>
           <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-3xl mx-auto text-center">
-              <img src="/images/14ba4f7e-de79-45df-91d1-e7e7642c505d.png" alt="GoEvents Logo" className="h-20 mx-auto mb-6" />
-              <h1 className="text-4xl md:text-6xl font-bold mb-6 text-gradient">
-                Smart solutions for seamless events
-              </h1>
+              <img src="/images/14ba4f7e-de79-45df-91d1-e7e7642c505d.png" alt="GoEvents Logo" className="h-30 mx-auto mb-6" />
               <p className="text-lg md:text-xl text-muted-foreground mb-10">
                 Streamline your events with modern tools for ticketing, check-ins, and analytics.
               </p>
