@@ -48,7 +48,6 @@ const Navbar: React.FC = () => {
       <div className="flex items-center justify-between h-16 px-4 md:px-6">
         <div className="flex items-center">
           <Link to="/" className="flex items-center">
-            <img src="/lovable-uploads/14ba4f7e-de79-45df-91d1-e7e7642c505d.png" alt="GoEvents Logo" className="h-8 mr-2" />
             <span className="text-xl font-semibold text-white">GoEvents</span>
           </Link>
           
