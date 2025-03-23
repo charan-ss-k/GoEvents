@@ -68,7 +68,7 @@ const WorkerSignup = () => {
         <Card className="w-full backdrop-blur-md">
           <CardHeader className="space-y-1">
             <CardTitle className="text-2xl text-center">
-              Create a Worker Account
+              Create a worker Account
             </CardTitle>
             <CardDescription className="text-center">
               Enter your information to create an account
