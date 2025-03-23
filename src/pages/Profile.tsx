@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,73 +7,82 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/contexts/AuthContext';
 import BlurContainer from '@/components/ui/BlurContainer';
-import { User, Mail, Phone, Building, MapPin, CalendarClock, Shield } from 'lucide-react';
+import { User, Mail, Phone, Building, MapPin, CalendarClock, Shield, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
+
+interface UserProfile {
+  id: string;
+  full_name: string;
+  email: string;
+  phone: string;
+  user_type: string;
+  created_at: string;
+}
 
 const Profile: React.FC = () => {
-  const { user, userType, isLoading } = useAuth();
+  const { user: authUser, isLoading: authLoading } = useAuth();
   const navigate = useNavigate();
-  const [profileData, setProfileData] = React.useState<any>(null);
-  const [isProfileLoading, setIsProfileLoading] = React.useState(true);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!isLoading && !user) {
-      navigate('/login');
-    }
+    const fetchProfile = async () => {
+      if (!authUser?.id) {
+        setIsLoading(false);
+        return;
+      }
 
-    const fetchProfileData = async () => {
-      if (user) {
-        try {
-          const { data, error } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', user.id)
-            .single();
-          
-          if (error) {
-            console.error('Error fetching profile data:', error);
-          } else {
-            setProfileData(data);
-          }
-        } catch (error) {
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', authUser.id)
+          .single();
+
+        if (error) {
           console.error('Error fetching profile:', error);
-        } finally {
-          setIsProfileLoading(false);
+          toast.error('Failed to load profile data');
+        } else {
+          setProfile(data);
         }
+      } catch (error) {
+        console.error('Error:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    fetchProfileData();
-  }, [user, isLoading, navigate]);
+    fetchProfile();
+  }, [authUser]);
 
-  // Function to get user initials for avatar fallback
-  const getUserInitials = () => {
-    if (profileData?.full_name) {
-      return profileData.full_name
-        .split(' ')
-        .map((part: string) => part[0])
-        .join('')
-        .toUpperCase();
-    } else if (user?.email) {
-      return user.email.substring(0, 2).toUpperCase();
+  useEffect(() => {
+    if (!authLoading && !authUser) {
+      navigate('/login');
     }
-    return 'U';
-  };
+  }, [authUser, authLoading, navigate]);
 
-  if (isLoading || isProfileLoading) {
+  if (authLoading || isLoading) {
     return (
       <div className="min-h-screen bg-background">
         <Navbar />
         <main className="pt-20 pb-16 px-4 max-w-5xl mx-auto">
           <div className="flex justify-center items-center h-[70vh]">
-            <div className="animate-pulse text-center">
-              <p>Loading profile...</p>
+            <div className="animate-spin text-primary">
+              <Loader2 className="h-8 w-8" />
             </div>
           </div>
         </main>
       </div>
     );
   }
+
+  if (!profile || !authUser) return null;
+
+  const userData = {
+    ...authUser,
+    ...profile
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -91,16 +100,18 @@ const Profile: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <BlurContainer className="md:col-span-1 p-6 flex flex-col items-center text-center">
               <Avatar className="h-24 w-24 mb-4">
-                <AvatarImage src="" alt={profileData?.full_name || user?.email} />
-                <AvatarFallback className="text-xl">{getUserInitials()}</AvatarFallback>
+                <AvatarImage src="" alt={userData.full_name || userData.email} />
+                <AvatarFallback className="text-xl">
+                  {userData.full_name?.charAt(0) || userData.email?.charAt(0)}
+                </AvatarFallback>
               </Avatar>
               
-              <h2 className="text-xl font-semibold mb-1">{profileData?.full_name || 'User'}</h2>
-              <p className="text-muted-foreground mb-4">{user?.email}</p>
+              <h2 className="text-xl font-semibold mb-1">{userData.full_name}</h2>
+              <p className="text-muted-foreground mb-4">{userData.email}</p>
               
               <div className="flex items-center justify-center bg-secondary/40 rounded-full px-3 py-1 text-sm mb-4">
                 <Shield className="h-4 w-4 mr-1" />
-                <span className="capitalize">{userType || 'User'}</span>
+                <span className="capitalize">{userData.user_type}</span>
               </div>
               
               <Button 
@@ -122,7 +133,7 @@ const Profile: React.FC = () => {
                     <div className="text-sm text-muted-foreground">Full Name</div>
                     <div className="flex items-center">
                       <User className="h-4 w-4 mr-2 text-muted-foreground" />
-                      <span>{profileData?.full_name || 'Not provided'}</span>
+                      <span>{userData.full_name || 'Not provided'}</span>
                     </div>
                   </div>
                   
@@ -130,7 +141,7 @@ const Profile: React.FC = () => {
                     <div className="text-sm text-muted-foreground">Email</div>
                     <div className="flex items-center">
                       <Mail className="h-4 w-4 mr-2 text-muted-foreground" />
-                      <span>{user?.email}</span>
+                      <span>{userData.email}</span>
                     </div>
                   </div>
                   
@@ -138,7 +149,7 @@ const Profile: React.FC = () => {
                     <div className="text-sm text-muted-foreground">Phone</div>
                     <div className="flex items-center">
                       <Phone className="h-4 w-4 mr-2 text-muted-foreground" />
-                      <span>{profileData?.phone || 'Not provided'}</span>
+                      <span>{userData.phone || 'Not provided'}</span>
                     </div>
                   </div>
                   
@@ -146,7 +157,7 @@ const Profile: React.FC = () => {
                     <div className="text-sm text-muted-foreground">Account Type</div>
                     <div className="flex items-center">
                       <Shield className="h-4 w-4 mr-2 text-muted-foreground" />
-                      <span className="capitalize">{userType || 'User'}</span>
+                      <span className="capitalize">{userData.user_type}</span>
                     </div>
                   </div>
                 </div>
@@ -165,7 +176,7 @@ const Profile: React.FC = () => {
                   <div className="text-sm text-muted-foreground">Account Created</div>
                   <div className="flex items-center">
                     <CalendarClock className="h-4 w-4 mr-2 text-muted-foreground" />
-                    <span>{new Date(user?.created_at || Date.now()).toLocaleDateString('en-IN', {
+                    <span>{new Date(userData.created_at || Date.now()).toLocaleDateString('en-IN', {
                       year: 'numeric',
                       month: 'long',
                       day: 'numeric'

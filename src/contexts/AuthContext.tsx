@@ -4,12 +4,19 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Session, User } from '@supabase/supabase-js';
 
+interface UserProfile {
+  id: string;
+  full_name: string;
+  email: string;
+  phone: string;
+  user_type: 'admin' | 'organizer' | 'worker';
+  created_at: string;
+}
+
 interface AuthContextType {
-  session: Session | null;
-  user: User | null;
-  userType: string | null;
+  user: UserProfile | null;
   isLoading: boolean;
-  signUp: (email: string, password: string, userData: { user_type: string; full_name: string; }) => Promise<void>;
+  userType: string | null;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
@@ -17,7 +24,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<UserProfile | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [userType, setUserType] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);

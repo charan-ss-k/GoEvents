@@ -14,12 +14,11 @@ import { supabase } from '@/integrations/supabase/client';
 const Settings = () => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
-  const [profile, setProfile] = useState<any>(null);
   const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
-    phone: '',
-    userType: '',
+    fullName: user?.full_name || '',
+    email: user?.email || '',
+    phone: user?.phone || '',
+    userType: user?.user_type || '',
     darkMode: false,
     notifications: true,
     emailUpdates: true,
@@ -27,39 +26,16 @@ const Settings = () => {
     timezone: 'Asia/Kolkata'
   });
 
-  // Fetch user profile data
   useEffect(() => {
-    const fetchProfile = async () => {
-      if (!user) return;
-      
-      try {
-        setLoading(true);
-        
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', user.id)
-          .single();
-          
-        if (error) throw error;
-        
-        setProfile(data);
-        setFormData(prev => ({
-          ...prev,
-          fullName: data.full_name || '',
-          email: user.email || '',
-          phone: data.phone || '',
-          userType: data.user_type || ''
-        }));
-        
-      } catch (error) {
-        console.error('Error fetching profile:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    fetchProfile();
+    if (user) {
+      setFormData(prev => ({
+        ...prev,
+        fullName: user.full_name || '',
+        email: user.email || '',
+        phone: user.phone || '',
+        userType: user.user_type || ''
+      }));
+    }
   }, [user]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -83,21 +59,19 @@ const Settings = () => {
     try {
       setLoading(true);
       
-      // Update profile in database
       const { error } = await supabase
         .from('profiles')
         .update({
           full_name: formData.fullName,
-          phone: formData.phone
+          phone: formData.phone,
+          updated_at: new Date().toISOString()
         })
         .eq('id', user.id);
         
       if (error) throw error;
       
       toast.success('Settings updated successfully');
-      
-      // Log this action for recent activity
-      console.log(`[${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}] Settings updated`);
+      console.log(`[${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}] Settings updated for user: ${user.email}`);
       
     } catch (error: any) {
       console.error('Error updating settings:', error);
