@@ -10,7 +10,7 @@ import BlurContainer from '@/components/ui/BlurContainer';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
 import LiveDataTracker from '@/components/dashboard/LiveDataTracker';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 interface Attendee {
   id: string;
@@ -39,7 +39,7 @@ const CheckIn: React.FC = () => {
   const [attendees, setAttendees] = useState<Attendee[]>([]);
   const [filteredAttendees, setFilteredAttendees] = useState<Attendee[]>([]);
   const [activeTab, setActiveTab] = useState('list');
-  const history = useHistory();
+  const navigate = useNavigate();
 
   // Load events and check for URL params on component mount
   useEffect(() => {
@@ -184,7 +184,7 @@ const CheckIn: React.FC = () => {
   };
 
   const navigateToBookTickets = () => {
-    history.push('/book-tickets');
+    navigate('/book-tickets');
   };
 
   return (
