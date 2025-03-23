@@ -22,7 +22,7 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs";
 import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/integrations/supabase/worker';
 import * as XLSX from 'xlsx';
 
 interface EventData {
@@ -140,7 +140,7 @@ const BookTickets: React.FC = () => {
     setEvents(sampleEvents);
     
     // Load any existing bookings from localStorage
-    const storedBookings = localStorage.getItem('clientBookings');
+    const storedBookings = localStorage.getItem('workerBookings');
     if (storedBookings) {
       setBookings(JSON.parse(storedBookings));
     }
@@ -208,7 +208,7 @@ const BookTickets: React.FC = () => {
       eventId: selectedEvent.id,
       eventTitle: selectedEvent.title,
       userId: user.id,
-      userName: user.user_metadata?.full_name || 'Client',
+      userName: user.user_metadata?.full_name || 'Worker',
       userEmail: user.email || '',
       ticketType: selectedTicketType,
       ticketPrice: getSelectedTicketPrice() / ticketQuantity,
@@ -221,13 +221,13 @@ const BookTickets: React.FC = () => {
     setBookings(updatedBookings);
     
     // Save to localStorage (in a real app, this would be saved to a database)
-    localStorage.setItem('clientBookings', JSON.stringify(updatedBookings));
+    localStorage.setItem('workerBookings', JSON.stringify(updatedBookings));
     
     // Update the Excel file for admin (in a real app, this would be done on the server)
     const workbook = XLSX.utils.book_new();
     const worksheet = XLSX.utils.json_to_sheet(updatedBookings);
     XLSX.utils.book_append_sheet(workbook, worksheet, "Bookings");
-    XLSX.writeFile(workbook, "client_bookings.xlsx");
+    XLSX.writeFile(workbook, "worker_bookings.xlsx");
     
     // Log this action for recent activity
     console.log(`[${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}] Ticket booked: ${selectedEvent.title} (${selectedTicketType}) by ${user.email}`);
@@ -274,7 +274,7 @@ const BookTickets: React.FC = () => {
     console.log(`[${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}] Ticket downloaded: ${booking.ticketId}`);
   };
   
-  // Function to render client tickets
+  // Function to render worker tickets
   const renderMyTickets = () => {
     const userBookings = bookings.filter(booking => 
       user && booking.userId === user.id
@@ -506,7 +506,7 @@ const BookTickets: React.FC = () => {
   );
 };
 
-// Event Card Component for client booking interface
+// Event Card Component for worker booking interface
 const EventCard: React.FC<{ 
   event: EventData; 
   onBookEvent: (event: EventData) => void;
