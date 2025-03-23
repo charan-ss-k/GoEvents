@@ -21,6 +21,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/contexts/AuthContext';
+import { toast } from 'react-toastify';
 
 const Navbar: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -34,10 +35,11 @@ const Navbar: React.FC = () => {
 
   const handleLogout = async () => {
     try {
+      setMobileMenuOpen(false); // Close mobile menu first
       await signOut();
-      setMobileMenuOpen(false); // Close mobile menu after logout
     } catch (error) {
       console.error('Logout error:', error);
+      toast.error('Failed to logout. Please try again.');
     }
   };
 
