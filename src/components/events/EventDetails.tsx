@@ -333,12 +333,6 @@ const EventDetails: React.FC<EventDetailsProps> = ({
           </BlurContainer>
 
           <div className="flex space-x-2">
-            <Button className="flex-1" asChild>
-              <a href={`/check-in?event=${id}`}>
-                <Ticket className="h-4 w-4 mr-2" />
-                Check-in Attendees
-              </a>
-            </Button>
             <Button variant="outline" className="flex items-center" onClick={handleShareEvent}>
               <Share2 className="h-4 w-4 mr-2" />
               Share
