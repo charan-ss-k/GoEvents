@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import { Button } from '@/components/ui/button';
@@ -22,7 +23,7 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs";
 import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/integrations/supabase/worker';
+import { supabase } from '@/integrations/supabase/client';
 import * as XLSX from 'xlsx';
 
 interface EventData {
@@ -140,7 +141,7 @@ const BookTickets: React.FC = () => {
     setEvents(sampleEvents);
     
     // Load any existing bookings from localStorage
-    const storedBookings = localStorage.getItem('workerBookings');
+    const storedBookings = localStorage.getItem('clientBookings');
     if (storedBookings) {
       setBookings(JSON.parse(storedBookings));
     }
@@ -153,10 +154,6 @@ const BookTickets: React.FC = () => {
   );
   
   const handleBookEvent = (event: EventData) => {
-    if (user.user_type !== 'worker') {
-      toast.error('Only workers can book tickets.');
-      return;
-    }
     setSelectedEvent(event);
     setSelectedTicketType('');
     setTicketQuantity(1);
@@ -208,7 +205,7 @@ const BookTickets: React.FC = () => {
       eventId: selectedEvent.id,
       eventTitle: selectedEvent.title,
       userId: user.id,
-      userName: user.user_metadata?.full_name || 'Worker',
+      userName: user.user_metadata?.full_name || 'Client',
       userEmail: user.email || '',
       ticketType: selectedTicketType,
       ticketPrice: getSelectedTicketPrice() / ticketQuantity,
@@ -221,13 +218,13 @@ const BookTickets: React.FC = () => {
     setBookings(updatedBookings);
     
     // Save to localStorage (in a real app, this would be saved to a database)
-    localStorage.setItem('workerBookings', JSON.stringify(updatedBookings));
+    localStorage.setItem('clientBookings', JSON.stringify(updatedBookings));
     
     // Update the Excel file for admin (in a real app, this would be done on the server)
     const workbook = XLSX.utils.book_new();
     const worksheet = XLSX.utils.json_to_sheet(updatedBookings);
     XLSX.utils.book_append_sheet(workbook, worksheet, "Bookings");
-    XLSX.writeFile(workbook, "worker_bookings.xlsx");
+    XLSX.writeFile(workbook, "client_bookings.xlsx");
     
     // Log this action for recent activity
     console.log(`[${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}] Ticket booked: ${selectedEvent.title} (${selectedTicketType}) by ${user.email}`);
@@ -274,7 +271,7 @@ const BookTickets: React.FC = () => {
     console.log(`[${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}] Ticket downloaded: ${booking.ticketId}`);
   };
   
-  // Function to render worker tickets
+  // Function to render client tickets
   const renderMyTickets = () => {
     const userBookings = bookings.filter(booking => 
       user && booking.userId === user.id
@@ -506,7 +503,7 @@ const BookTickets: React.FC = () => {
   );
 };
 
-// Event Card Component for worker booking interface
+// Event Card Component for client booking interface
 const EventCard: React.FC<{ 
   event: EventData; 
   onBookEvent: (event: EventData) => void;

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -101,20 +100,13 @@ const LoginPage = () => {
             <div className="text-sm text-center w-full">
               Don't have an account? Sign up as a:
             </div>
-            <div className="grid grid-cols-3 gap-2 w-full">
+            <div className="grid grid-cols-2 gap-4 w-full">
               <Button 
                 variant="outline" 
                 className="w-full border-purple-800/40 hover:bg-purple-800/20" 
                 onClick={() => navigate('/signup/manager')}
               >
                 Manager
-              </Button>
-              <Button 
-                variant="outline" 
-                className="w-full border-purple-800/40 hover:bg-purple-800/20" 
-                onClick={() => navigate('/signup/worker')}
-              >
-                Worker
               </Button>
               <Button 
                 variant="outline" 

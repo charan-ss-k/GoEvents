@@ -9,6 +9,119 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      bookings: {
+        Row: {
+          created_at: string | null
+          event_id: string | null
+          event_title: string
+          id: string
+          status: string
+          ticket_id: string
+          ticket_price: number
+          ticket_type: string
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          event_id?: string | null
+          event_title: string
+          id?: string
+          status?: string
+          ticket_id: string
+          ticket_price: number
+          ticket_type: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          event_id?: string | null
+          event_title?: string
+          id?: string
+          status?: string
+          ticket_id?: string
+          ticket_price?: number
+          ticket_type?: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      events: {
+        Row: {
+          address: string | null
+          attendees: number
+          capacity: number
+          city: string
+          created_at: string | null
+          date: string
+          description: string | null
+          end_time: string | null
+          id: string
+          location: string | null
+          organizer_id: string | null
+          poster_url: string | null
+          price: number
+          seats_info: Json
+          start_time: string | null
+          state: string
+          title: string
+          updated_at: string | null
+          venue: string
+        }
+        Insert: {
+          address?: string | null
+          attendees?: number
+          capacity?: number
+          city: string
+          created_at?: string | null
+          date: string
+          description?: string | null
+          end_time?: string | null
+          id?: string
+          location?: string | null
+          organizer_id?: string | null
+          poster_url?: string | null
+          price?: number
+          seats_info?: Json
+          start_time?: string | null
+          state?: string
+          title: string
+          updated_at?: string | null
+          venue: string
+        }
+        Update: {
+          address?: string | null
+          attendees?: number
+          capacity?: number
+          city?: string
+          created_at?: string | null
+          date?: string
+          description?: string | null
+          end_time?: string | null
+          id?: string
+          location?: string | null
+          organizer_id?: string | null
+          poster_url?: string | null
+          price?: number
+          seats_info?: Json
+          start_time?: string | null
+          state?: string
+          title?: string
+          updated_at?: string | null
+          venue?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string

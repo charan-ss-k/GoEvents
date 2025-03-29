@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import { Button } from '@/components/ui/button';
@@ -225,7 +226,7 @@ const Admin: React.FC = () => {
             <div>
               <h1 className="text-3xl font-bold">Admin Dashboard</h1>
               <p className="text-muted-foreground mt-1">
-                Manage events, participants, and check-ins
+                Manage users, events, and export data
               </p>
             </div>
             

@@ -4,7 +4,7 @@ import Navbar from '@/components/layout/Navbar';
 import StatCard from '@/components/dashboard/StatCard';
 import DashboardCard from '@/components/dashboard/DashboardCard';
 import { Button } from '@/components/ui/button';
-import { Calendar, Ticket as TicketIcon, Users, TrendingUp, Bell, ChevronRight, Plus } from 'lucide-react';
+import { Calendar, Ticket as TicketIcon, Users, TrendingUp, Bell, ChevronRight, Plus, Settings } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import BlurContainer from '@/components/ui/BlurContainer';
 import Chatbot from '@/components/chatbot/Chatbot';
@@ -169,6 +169,12 @@ const Dashboard: React.FC = () => {
                 <Link to="/events">
                   <Plus className="mr-2 h-4 w-4" />
                   Create Event
+                </Link>
+              </Button>
+              <Button variant="secondary" asChild className="flex items-center">
+                <Link to="/admin">
+                  <Settings className="mr-2 h-4 w-4" />
+                  Admin Panel
                 </Link>
               </Button>
             </div>

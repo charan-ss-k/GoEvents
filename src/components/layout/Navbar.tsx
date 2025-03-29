@@ -21,7 +21,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/contexts/AuthContext';
-import { toast } from 'sonner';
 
 const Navbar: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -35,11 +34,11 @@ const Navbar: React.FC = () => {
 
   const handleLogout = async () => {
     try {
-      setMobileMenuOpen(false); // Close mobile menu first
+      console.log("Logout button clicked");
       await signOut();
+      console.log("Signed out successfully");
     } catch (error) {
-      console.error('Logout error:', error);
-      toast.error('Failed to logout. Please try again.');
+      console.error("Error during logout:", error);
     }
   };
 
@@ -84,6 +83,16 @@ const Navbar: React.FC = () => {
         </div>
         
         <div className="flex items-center space-x-2">
+          {user && (
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="hidden md:flex text-white"
+              aria-label="Search"
+            >
+              <Search className="h-5 w-5" />
+            </Button>
+          )}
           
           {user ? (
             <>

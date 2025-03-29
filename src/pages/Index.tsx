@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
 import { Button } from '@/components/ui/button';
@@ -15,20 +15,6 @@ import { useAuth } from '@/contexts/AuthContext';
 const Index = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-
-  const handleNavigation = async (path: string) => {
-    setLoading(true);
-    setError('');
-    try {
-      await navigate(path);
-    } catch (err) {
-      setError('Failed to navigate. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -40,27 +26,23 @@ const Index = () => {
           <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5 dark:from-primary/10 dark:to-secondary/10 z-0"></div>
           <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-3xl mx-auto text-center">
-              <img src="/images/14ba4f7e-de79-45df-91d1-e7e7642c505d.png" alt="GoEvents Logo" className="h-30 mx-auto mb-6" />
-              <p className="text-lg md:text-xl text-muted-foreground mb-10">
-                Streamline your events with modern tools for ticketing, check-ins, and analytics.
-              </p>
+              <img src="/uploads/14ba4f7e-de79-45df-91d1-e7e7642c505d.png" alt="GoEvents Logo" className="h-64 mx-auto mb-12" />
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 {user ? (
-                  <Button size="lg" onClick={() => handleNavigation('/dashboard')} disabled={loading}>
-                    {loading ? 'Loading...' : 'Go to Dashboard'}
+                  <Button size="lg" onClick={() => navigate('/dashboard')}>
+                    Go to Dashboard
                   </Button>
                 ) : (
                   <>
-                    <Button size="lg" onClick={() => handleNavigation('/signup/manager')} disabled={loading}>
-                      {loading ? 'Loading...' : 'Sign Up as Manager'}
+                    <Button size="lg" onClick={() => navigate('/signup/manager')}>
+                      Sign Up as Manager
                     </Button>
-                    <Button variant="outline" size="lg" onClick={() => handleNavigation('/signup/worker')} disabled={loading}>
-                      {loading ? 'Loading...' : 'Sign Up as Worker'}
+                    <Button variant="outline" size="lg" onClick={() => navigate('/signup/client')}>
+                      Sign Up as Client
                     </Button>
                   </>
                 )}
               </div>
-              {error && <p className="text-red-500 mt-4">{error}</p>}
             </div>
           </div>
         </section>
@@ -141,20 +123,19 @@ const Index = () => {
               Join thousands of event organizers who are streamlining their workflow and creating unforgettable experiences.
             </p>
             {user ? (
-              <Button size="lg" onClick={() => handleNavigation('/dashboard')} disabled={loading}>
-                {loading ? 'Loading...' : 'Go to Dashboard'}
+              <Button size="lg" onClick={() => navigate('/dashboard')}>
+                Go to Dashboard
               </Button>
             ) : (
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button size="lg" onClick={() => handleNavigation('/signup/manager')} disabled={loading}>
-                  {loading ? 'Loading...' : 'Sign Up as Manager'}
+                <Button size="lg" onClick={() => navigate('/signup/manager')}>
+                  Sign Up as Manager
                 </Button>
-                <Button variant="outline" size="lg" onClick={() => handleNavigation('/signup/worker')} disabled={loading}>
-                  {loading ? 'Loading...' : 'Sign Up as Worker'}
+                <Button variant="outline" size="lg" onClick={() => navigate('/signup/client')}>
+                  Sign Up as Client
                 </Button>
               </div>
             )}
-            {error && <p className="text-red-500 mt-4">{error}</p>}
           </div>
         </section>
       </main>

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import { Button } from '@/components/ui/button';
@@ -10,7 +11,6 @@ import BlurContainer from '@/components/ui/BlurContainer';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
 import LiveDataTracker from '@/components/dashboard/LiveDataTracker';
-import { useNavigate } from 'react-router-dom';
 
 interface Attendee {
   id: string;
@@ -39,8 +39,7 @@ const CheckIn: React.FC = () => {
   const [attendees, setAttendees] = useState<Attendee[]>([]);
   const [filteredAttendees, setFilteredAttendees] = useState<Attendee[]>([]);
   const [activeTab, setActiveTab] = useState('list');
-  const navigate = useNavigate();
-
+  
   // Load events and check for URL params on component mount
   useEffect(() => {
     const loadEvents = () => {
@@ -63,7 +62,7 @@ const CheckIn: React.FC = () => {
     
     loadEvents();
   }, []);
-
+  
   // Filter attendees when search term changes
   useEffect(() => {
     if (!searchTerm.trim()) {
@@ -80,7 +79,7 @@ const CheckIn: React.FC = () => {
     
     setFilteredAttendees(filtered);
   }, [searchTerm, attendees]);
-
+  
   const loadAttendeesForEvent = (eventId: string) => {
     // In a real app, fetch from API or database
     const mockAttendees: Attendee[] = Array.from({ length: 50 }, (_, i) => {
@@ -103,18 +102,18 @@ const CheckIn: React.FC = () => {
     const selectedEventName = events.find(e => e.id === eventId)?.name || 'Unknown Event';
     console.log(`[${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}] Loaded attendees for event: ${selectedEventName}`);
   };
-
+  
   const handleEventSelect = (eventId: string) => {
     setSelectedEvent(eventId);
     loadAttendeesForEvent(eventId);
     setScanMode(false);
   };
-
+  
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     // Already handled by useEffect
   };
-
+  
   const handleQrSuccess = (ticketId: string) => {
     const attendee = attendees.find(a => a.ticketId === ticketId);
     
@@ -147,7 +146,7 @@ const CheckIn: React.FC = () => {
     // Reset scan mode
     setScanMode(false);
   };
-
+  
   const toggleCheckinStatus = (attendeeId: string) => {
     const updatedAttendees = attendees.map(a => {
       if (a.id === attendeeId) {
@@ -177,16 +176,12 @@ const CheckIn: React.FC = () => {
       console.log(`[${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}] ${!attendee.checkedIn ? 'Checked in' : 'Removed check-in for'}: ${attendee.name} for event: ${selectedEventName}`);
     }
   };
-
+  
   // Gets the selected event data
   const getSelectedEventData = (): Event | undefined => {
     return events.find(e => e.id === selectedEvent);
   };
-
-  const navigateToBookTickets = () => {
-    navigate('/book-tickets');
-  };
-
+  
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -196,7 +191,7 @@ const CheckIn: React.FC = () => {
           <div>
             <h1 className="text-3xl font-bold">Check-in</h1>
             <p className="text-muted-foreground mt-1">
-              {user.user_type === 'worker' ? 'Book tickets for events' : 'Scan tickets or search attendees for event check-in'}
+              Scan tickets or search attendees for event check-in
             </p>
           </div>
           
@@ -261,152 +256,157 @@ const CheckIn: React.FC = () => {
                       Change Event
                     </Button>
                     
-                    {user.user_type === 'worker' ? (
-                      <Button onClick={navigateToBookTickets}>
-                        <TicketIcon className="h-4 w-4 mr-2" />
-                        Book Tickets
-                      </Button>
-                    ) : (
-                      <Button
-                        onClick={() => {
-                          setScanMode(true);
-                          setActiveTab('scan');
-                        }}
-                      >
-                        <TicketIcon className="h-4 w-4 mr-2" />
-                        Scan Ticket
-                      </Button>
-                    )}
+                    <Button
+                      onClick={() => {
+                        setScanMode(true);
+                        setActiveTab('scan');
+                      }}
+                    >
+                      <TicketIcon className="h-4 w-4 mr-2" />
+                      Scan Ticket
+                    </Button>
                   </div>
                 </div>
               </BlurContainer>
               
-              {user.user_type !== 'worker' && (
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                  <div className="lg:col-span-2">
-                    <Tabs value={activeTab} onValueChange={setActiveTab}>
-                      <TabsList className="grid w-full grid-cols-2">
-                        <TabsTrigger value="list">
-                          <ListFilter className="h-4 w-4 mr-2" />
-                          Attendee List
-                        </TabsTrigger>
-                        <TabsTrigger value="scan">
-                          <TicketIcon className="h-4 w-4 mr-2" />
-                          Scan Tickets
-                        </TabsTrigger>
-                      </TabsList>
-                      
-                      <TabsContent value="list">
-                        <BlurContainer className="p-4">
-                          <form onSubmit={handleSearch} className="mb-4">
-                            <div className="relative">
-                              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                              <Input
-                                type="text"
-                                placeholder="Search by name, email or ticket ID..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                className="pl-9"
-                              />
-                            </div>
-                          </form>
-                          
-                          <div className="flex justify-between items-center mb-4">
-                            <h3 className="font-semibold">Attendees ({filteredAttendees.length})</h3>
-                            <div className="text-sm text-muted-foreground">
-                              {attendees.filter(a => a.checkedIn).length} checked in
-                            </div>
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2">
+                  <Tabs value={activeTab} onValueChange={setActiveTab}>
+                    <TabsList className="grid w-full grid-cols-2">
+                      <TabsTrigger value="list">
+                        <ListFilter className="h-4 w-4 mr-2" />
+                        Attendee List
+                      </TabsTrigger>
+                      <TabsTrigger value="scan">
+                        <TicketIcon className="h-4 w-4 mr-2" />
+                        Scan Tickets
+                      </TabsTrigger>
+                    </TabsList>
+                    
+                    <TabsContent value="list">
+                      <BlurContainer className="p-4">
+                        <form onSubmit={handleSearch} className="mb-4">
+                          <div className="relative">
+                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            <Input
+                              type="text"
+                              placeholder="Search by name, email or ticket ID..."
+                              value={searchTerm}
+                              onChange={(e) => setSearchTerm(e.target.value)}
+                              className="pl-9"
+                            />
                           </div>
-                          
-                          {filteredAttendees.length > 0 ? (
-                            <div className="overflow-x-auto">
-                              <table className="w-full">
-                                <thead>
-                                  <tr className="border-b">
-                                    <th className="py-2 px-3 text-left font-medium text-sm">Name</th>
-                                    <th className="py-2 px-3 text-left font-medium text-sm">Ticket</th>
-                                    <th className="py-2 px-3 text-left font-medium text-sm">Type</th>
-                                    <th className="py-2 px-3 text-left font-medium text-sm">Status</th>
-                                    <th className="py-2 px-3 text-right font-medium text-sm">Action</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {filteredAttendees.map(attendee => (
-                                    <tr key={attendee.id} className="border-b last:border-0 hover:bg-secondary/10">
-                                      <td className="py-2 px-3">
-                                        <div className="flex items-center">
-                                          <User className="h-4 w-4 mr-2 text-muted-foreground" />
-                                          <div>
-                                            <div className="font-medium text-sm">{attendee.name}</div>
-                                            <div className="text-xs text-muted-foreground">{attendee.email}</div>
-                                          </div>
+                        </form>
+                        
+                        <div className="flex justify-between items-center mb-4">
+                          <h3 className="font-semibold">Attendees ({filteredAttendees.length})</h3>
+                          <div className="text-sm text-muted-foreground">
+                            {attendees.filter(a => a.checkedIn).length} checked in
+                          </div>
+                        </div>
+                        
+                        {filteredAttendees.length > 0 ? (
+                          <div className="overflow-x-auto">
+                            <table className="w-full">
+                              <thead>
+                                <tr className="border-b">
+                                  <th className="py-2 px-3 text-left font-medium text-sm">Name</th>
+                                  <th className="py-2 px-3 text-left font-medium text-sm">Ticket</th>
+                                  <th className="py-2 px-3 text-left font-medium text-sm">Type</th>
+                                  <th className="py-2 px-3 text-left font-medium text-sm">Status</th>
+                                  <th className="py-2 px-3 text-right font-medium text-sm">Action</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {filteredAttendees.map(attendee => (
+                                  <tr key={attendee.id} className="border-b last:border-0 hover:bg-secondary/10">
+                                    <td className="py-2 px-3">
+                                      <div className="flex items-center">
+                                        <User className="h-4 w-4 mr-2 text-muted-foreground" />
+                                        <div>
+                                          <div className="font-medium text-sm">{attendee.name}</div>
+                                          <div className="text-xs text-muted-foreground">{attendee.email}</div>
                                         </div>
-                                      </td>
-                                      <td className="py-2 px-3 text-sm">{attendee.ticketId}</td>
-                                      <td className="py-2 px-3">
-                                        <span className="text-xs px-2 py-1 rounded-full bg-secondary">
-                                          {attendee.ticketType}
-                                        </span>
-                                      </td>
-                                      <td className="py-2 px-3">
-                                        <span className={`text-xs px-2 py-1 rounded-full ${
-                                          attendee.checkedIn 
-                                            ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
-                                            : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300'
-                                        }`}>
-                                          {attendee.checkedIn ? 'Checked In' : 'Not Checked In'}
-                                        </span>
-                                      </td>
-                                      <td className="py-2 px-3 text-right">
-                                        <Button
-                                          size="sm"
-                                          variant={attendee.checkedIn ? "outline" : "default"}
-                                          onClick={() => toggleCheckinStatus(attendee.id)}
-                                        >
-                                          {attendee.checkedIn ? 'Undo' : 'Check In'}
-                                        </Button>
-                                      </td>
-                                    </tr>
-                                  ))}
-                                </tbody>
-                              </table>
-                            </div>
-                          ) : (
-                            <div className="py-8 flex flex-col items-center justify-center text-center">
-                              <ListX className="h-12 w-12 text-muted-foreground mb-4" />
-                              <h3 className="text-lg font-medium">No attendees found</h3>
-                              <p className="text-muted-foreground">
-                                Try adjusting your search or check back later
-                              </p>
-                            </div>
-                          )}
-                        </BlurContainer>
-                      </TabsContent>
-                      
-                      <TabsContent value="scan">
-                        <BlurContainer className="p-4">
-                          <QrScanner onSuccess={handleQrSuccess} />
-                          
-                          <div className="mt-6 w-full">
-                            <h4 className="font-medium mb-2">Manual Check-in</h4>
-                            <div className="flex gap-2">
-                              <Input placeholder="Enter ticket ID" />
-                              <Button variant="outline">
-                                <UserPlus className="h-4 w-4 mr-2" />
-                                Check In
-                              </Button>
-                            </div>
+                                      </div>
+                                    </td>
+                                    <td className="py-2 px-3 text-sm">{attendee.ticketId}</td>
+                                    <td className="py-2 px-3">
+                                      <span className="text-xs px-2 py-1 rounded-full bg-secondary">
+                                        {attendee.ticketType}
+                                      </span>
+                                    </td>
+                                    <td className="py-2 px-3">
+                                      <span className={`text-xs px-2 py-1 rounded-full ${
+                                        attendee.checkedIn 
+                                          ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
+                                          : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300'
+                                      }`}>
+                                        {attendee.checkedIn ? 'Checked In' : 'Not Checked In'}
+                                      </span>
+                                    </td>
+                                    <td className="py-2 px-3 text-right">
+                                      <Button
+                                        size="sm"
+                                        variant={attendee.checkedIn ? "outline" : "default"}
+                                        onClick={() => toggleCheckinStatus(attendee.id)}
+                                      >
+                                        {attendee.checkedIn ? 'Undo' : 'Check In'}
+                                      </Button>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
                           </div>
-                        </BlurContainer>
-                      </TabsContent>
-                    </Tabs>
-                  </div>
-                  
-                  <div>
-                    <LiveDataTracker eventId={selectedEvent} refreshInterval={60} />
-                  </div>
+                        ) : (
+                          <div className="py-8 flex flex-col items-center justify-center text-center">
+                            <ListX className="h-12 w-12 text-muted-foreground mb-4" />
+                            <h3 className="text-lg font-medium">No Results Found</h3>
+                            <p className="text-muted-foreground mt-1">
+                              Try adjusting your search or clear filters
+                            </p>
+                          </div>
+                        )}
+                      </BlurContainer>
+                    </TabsContent>
+                    
+                    <TabsContent value="scan">
+                      <BlurContainer className="p-4 flex flex-col items-center justify-center">
+                        <h3 className="text-lg font-medium mb-4">Scan Ticket QR Code</h3>
+                        
+                        {scanMode ? (
+                          <QrScanner onSuccess={handleQrSuccess} />
+                        ) : (
+                          <div className="text-center">
+                            <p className="text-muted-foreground mb-4">
+                              Click the button below to start scanning tickets
+                            </p>
+                            <Button onClick={() => setScanMode(true)}>
+                              <TicketIcon className="h-4 w-4 mr-2" />
+                              Start Scanner
+                            </Button>
+                          </div>
+                        )}
+                        
+                        <div className="mt-6 w-full">
+                          <h4 className="font-medium mb-2">Manual Check-in</h4>
+                          <div className="flex gap-2">
+                            <Input placeholder="Enter ticket ID" />
+                            <Button variant="outline">
+                              <UserPlus className="h-4 w-4 mr-2" />
+                              Check In
+                            </Button>
+                          </div>
+                        </div>
+                      </BlurContainer>
+                    </TabsContent>
+                  </Tabs>
                 </div>
-              )}
+                
+                <div>
+                  <LiveDataTracker eventId={selectedEvent} refreshInterval={60} />
+                </div>
+              </div>
             </>
           )}
         </div>

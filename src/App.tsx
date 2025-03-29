@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -15,7 +14,6 @@ import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import LoginPage from "./pages/Login";
 import ManagerSignup from "./pages/ManagerSignup";
-import WorkerSignup from "./pages/WorkerSignup";
 import ClientSignup from "./pages/ClientSignup";
 import BookTickets from "./pages/BookTickets";
 import Admin from "./pages/Admin";
@@ -23,7 +21,6 @@ import { AuthProvider } from "./contexts/AuthContext";
 
 const queryClient = new QueryClient();
 
-// Common footer component
 const Footer: React.FC = () => (
   <footer className="py-6 text-center text-sm text-muted-foreground">
     © 2025 GoEvents All Rights Reserved
@@ -42,7 +39,6 @@ const App: React.FC = () => {
               <Route path="/" element={<Index />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup/manager" element={<ManagerSignup />} />
-              <Route path="/signup/worker" element={<WorkerSignup />} />
               <Route path="/signup/client" element={<ClientSignup />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/events" element={<Events />} />

@@ -68,7 +68,7 @@ const ClientSignup = () => {
         <Card className="w-full backdrop-blur-md">
           <CardHeader className="space-y-1">
             <CardTitle className="text-2xl text-center">
-              Create a client Account
+              Create a Client Account
             </CardTitle>
             <CardDescription className="text-center">
               Enter your information to create an account
