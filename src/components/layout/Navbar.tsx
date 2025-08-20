@@ -21,6 +21,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/contexts/AuthContext';
+import { toast } from 'sonner';
 
 const Navbar: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -36,7 +37,9 @@ const Navbar: React.FC = () => {
     try {
       console.log("Logout button clicked");
       await signOut();
+      toast.success('Logout successful!');
       console.log("Signed out successfully");
+      navigate('/login'); // Navigate to login page after logout
     } catch (error) {
       console.error("Error during logout:", error);
     }
@@ -93,45 +96,16 @@ const Navbar: React.FC = () => {
               <Search className="h-5 w-5" />
             </Button>
           )}
-          
-          {user ? (
-            <>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full text-white">
-                    <User className="h-5 w-5" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56 animate-scale-in">
-                  <DropdownMenuLabel>{user.email}</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => navigate('/profile')}>
-                    <User className="mr-2 h-4 w-4" />
-                    <span>Profile</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate('/settings')}>
-                    <Settings className="mr-2 h-4 w-4" />
-                    <span>Settings</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleLogout}>
-                    <LogOut className="mr-2 h-4 w-4" />
-                    <span>Log out</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </>
-          ) : (
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={() => navigate('/login')}
-              className="flex items-center gap-2 text-white"
-            >
-              <LogIn className="h-4 w-4" />
-              <span>Login</span>
-            </Button>
-          )}
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={user ? handleLogout : () => navigate('/')}
+            className="flex items-center gap-2 text-white"
+          >
+            {user ? <LogOut className="h-4 w-4" /> : <LogIn className="h-4 w-4" />}
+            <span>{}</span>
+          </Button>
           
           <Button 
             variant="ghost" 

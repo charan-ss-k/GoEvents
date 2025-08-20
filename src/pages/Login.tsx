@@ -24,18 +24,22 @@ const LoginPage = () => {
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!email || !password) {
       toast.error('Please fill in all required fields');
       return;
     }
-    
+
     setIsLoading(true);
     try {
-      await signIn(email, password);
-      
-      // Log this action for recent activity
-      console.log(`User logged in: ${email}`);
+      // Validate against demo credentials only
+      if (email === 'demo@goevents.com' && password === 'Demo@1234') {
+        toast.success('Login successful!');
+        navigate('/dashboard');
+        console.log(`User logged in: ${email}`);
+      } else {
+        toast.error('Invalid email or password');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -59,6 +63,15 @@ const LoginPage = () => {
             <CardDescription className="text-center">
               Enter your email and password to sign in
             </CardDescription>
+            {/* Demo credentials section */}
+            <div className="mt-4 p-2 bg-secondary/30 rounded text-sm text-center text-muted-foreground border border-purple-800/20">
+              <div>
+                <strong>Demo Email:</strong> demo@goevents.com
+              </div>
+              <div>
+                <strong>Demo Password:</strong> Demo@1234
+              </div>
+            </div>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSignIn} className="space-y-4">
@@ -67,7 +80,7 @@ const LoginPage = () => {
                   <Input
                     id="email"
                     type="email"
-                    placeholder="Email address"
+                    placeholder="Enter Email address"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="pl-10 bg-secondary/50 border-purple-800/40"
@@ -81,7 +94,7 @@ const LoginPage = () => {
                   <Input
                     id="password"
                     type="password"
-                    placeholder="Password"
+                    placeholder="Enter Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="pl-10 bg-secondary/50 border-purple-800/40"

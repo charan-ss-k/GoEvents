@@ -1,6 +1,5 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '@/components/layout/Navbar';
 import { Button } from '@/components/ui/button';
 import { 
   MessageSquare, 
@@ -18,7 +17,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar />
 
       <main className="flex-1 pt-16">
         {/* Hero Section */}
@@ -34,11 +32,11 @@ const Index = () => {
                   </Button>
                 ) : (
                   <>
-                    <Button size="lg" onClick={() => navigate('/signup/manager')}>
-                      Sign Up as Manager
+                    <Button size="lg" onClick={() => navigate('/login')}>
+                      Sign In as Manager
                     </Button>
-                    <Button variant="outline" size="lg" onClick={() => navigate('/signup/client')}>
-                      Sign Up as Client
+                    <Button variant="outline" size="lg" onClick={() => navigate('/login')}>
+                      Sign In as Client
                     </Button>
                   </>
                 )}
